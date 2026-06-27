@@ -1,0 +1,58 @@
+global:
+  enabled: true
+  tlsDisable: true
+
+injector:
+  enabled: true
+
+ui:
+  enabled: true
+  serviceType: ClusterIP
+
+server:
+  enabled: true
+
+  affinity: ""
+
+  dataStorage:
+    enabled: true
+    size: 10Gi
+    storageClass: longhorn
+    accessMode: ReadWriteOnce
+
+  auditStorage:
+    enabled: false
+
+  standalone:
+    enabled: true
+    config: |
+      ui = true
+
+      listener "tcp" {
+        tls_disable = 1
+        address = "[::]:8200"
+        cluster_address = "[::]:8201"
+      }
+
+      storage "file" {
+        path = "/vault/data"
+      }
+
+  ha:
+    enabled: false
+
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: homelab-ca
+      traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    pathType: Prefix
+    hosts:
+      - host: vault.home.arpa
+        paths:
+          - /
+    tls:
+      - secretName: vault-tls
+        hosts:
+          - vault.home.arpa
