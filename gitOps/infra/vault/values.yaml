@@ -16,7 +16,7 @@ server:
 
   dataStorage:
     enabled: true
-    size: 10Gi
+    size: 5Gi
     storageClass: longhorn
     accessMode: ReadWriteOnce
 
